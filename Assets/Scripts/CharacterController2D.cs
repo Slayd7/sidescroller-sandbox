@@ -32,11 +32,16 @@ public class CharacterController2D : MonoBehaviour
 
 	protected Rigidbody2D body;
 	protected Collider2D collider;
+    protected Animator anim;
+    protected Transform trans;
+    bool isFacingRight;
 
 	protected void Awake ()
 	{
 		body = GetComponent<Rigidbody2D> ();
 		collider = GetComponent<Collider2D> ();
+        anim = GetComponent<Animator>();
+        trans = GetComponent<Transform>();
 	}
 
 	protected void Update ()
@@ -65,6 +70,41 @@ public class CharacterController2D : MonoBehaviour
 			float t = (Time.time - wallTouchAt) / walltouchDampTime;
 			velocity = Vector2.Lerp (velocity, Vector2.Scale (velocity, Vector2.up), t);
 		}
+
+        if (velocity.x > 0)
+        {
+            anim.SetInteger("playerState", 2);
+            isFacingRight = true;
+        }
+
+        else if (velocity.x == 0)
+        {
+            anim.SetInteger("playerState", 0);
+        }
+
+        else if (velocity.x < 0)
+        {
+            anim.SetInteger("playerState", 2);
+            isFacingRight = false;
+        }
+
+        if (!isFacingRight)
+        {
+            trans.localScale = new Vector2(-2, 2);
+        }
+        else if (isFacingRight)
+        {
+            trans.localScale = new Vector2(2, 2);
+        }
+
+        if (velocity.y > 0)
+        {
+            anim.SetInteger("playerState", 4);
+        }
+        else if (velocity.y < 0)
+        {
+            anim.SetInteger("playerState", 5);
+        }
 
 		body.velocity = velocity;
 	}
